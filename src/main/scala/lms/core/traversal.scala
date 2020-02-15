@@ -332,7 +332,8 @@ class CompactTraverser extends Traverser {
     shouldInline = { (n: Sym) =>
       if ((df contains n) &&              // locally defined
           (hm.getOrElse(n, 0) == 1) &&    // locally used exactly once
-          (!hmi(n)))                      // not used in nested scopes
+          (!hmi(n)) &&                    // not used in nested scopes
+          df(n).op != "tensor-apply")     // inlining tensor-apply messes up lifetime analysis
           Some(df(n))
       else None }
     // (shouldInline is protected by withScope)
