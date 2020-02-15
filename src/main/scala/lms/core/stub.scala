@@ -46,7 +46,7 @@ object Adapter extends FrontEnd {
     typeMap = new scala.collection.mutable.HashMap[lms.core.Backend.Exp, Manifest[_]]()
     funTable = Nil
 
-    var g = time("staging") { program(prog) }
+    var g: Graph = time("staging") { program(prog) }
 
     def extra() = if (verbose) utils.captureOut {
       println("// Raw:")
@@ -586,7 +586,7 @@ abstract class DslDriverC[A: Manifest, B: Manifest] extends DslSnippet[A, B] wit
   }
   var compilerCommand = "cc -std=c99 -O3"
   def libraries = codegen.libraryFlags mkString(" ")
-  lazy val f: A => Unit = {
+  lazy val f: A => Stream[String] = {
     // TBD: should read result of type B?
     val out = new java.io.PrintStream("/tmp/snippet.c")
     out.println(code)
@@ -598,9 +598,9 @@ abstract class DslDriverC[A: Manifest, B: Manifest] extends DslSnippet[A, B] wit
       else s"-I ${codegen.includePaths.mkString(" -I ")}"
     val pb: ProcessBuilder = s"$compilerCommand /tmp/snippet.c -o /tmp/snippet $libraries $includes"
     time("gcc") { pb.lines.foreach(Console.println _) }
-    (a: A) => (s"/tmp/snippet $a": ProcessBuilder).lines.foreach(Console.println _)
+    (a: A) => (s"/tmp/snippet $a": ProcessBuilder).lineStream
   }
-  def eval(a: A): Unit = { val f1 = f; time("eval")(f1(a)) }
+  def eval(a: A): Stream[String] = { val f1 = f; time("eval")(f1(a)) }
 }
 
 // STUB CODE
