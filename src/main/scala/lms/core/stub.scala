@@ -584,11 +584,11 @@ abstract class DslDriverC[A: Manifest, B: Manifest] extends DslSnippet[A, B] wit
     val statics = codegen.emitSource[A,B](wrapper, "Snippet", new java.io.PrintStream(source))
     (source.toString, statics)
   }
-  var compilerCommand = "cc -std=c99 -O3"
+  var compilerCommand = "cc -std=c++14 -O2"
   def libraries = codegen.libraryFlags mkString(" ")
   lazy val f: A => Stream[String] = {
     // TBD: should read result of type B?
-    val out = new java.io.PrintStream("/tmp/snippet.c")
+    val out = new java.io.PrintStream("/tmp/snippet.cpp")
     out.println(code)
     out.close
     (new java.io.File("/tmp/snippet")).delete
@@ -597,7 +597,7 @@ abstract class DslDriverC[A: Manifest, B: Manifest] extends DslSnippet[A, B] wit
       if (codegen.includePaths.isEmpty) ""
       else s"-I ${codegen.includePaths.mkString(" -I ")}"
     val pb: ProcessBuilder = s"$compilerCommand /tmp/snippet.c -o /tmp/snippet $libraries $includes"
-    time("gcc") { pb.lines.foreach(Console.println _) }
+    time("clang++") { pb.lines.foreach(Console.println _) }
     (a: A) => (s"/tmp/snippet $a": ProcessBuilder).lineStream
   }
   def eval(a: A): Stream[String] = { val f1 = f; time("eval")(f1(a)) }
