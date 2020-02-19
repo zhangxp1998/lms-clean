@@ -333,7 +333,9 @@ class CompactTraverser extends Traverser {
       if ((df contains n) &&              // locally defined
           (hm.getOrElse(n, 0) == 1) &&    // locally used exactly once
           (!hmi(n)) &&                    // not used in nested scopes
-          df(n).op != "tensor-apply")     // inlining tensor-apply messes up lifetime analysis
+          !(df(n).op == "tensor-apply" &&
+            df.values.exists(_.eff.wkeys.contains(STORE)))     // inlining tensor-apply messes up lifetime analysis
+        )
           Some(df(n))
       else None }
     // (shouldInline is protected by withScope)
