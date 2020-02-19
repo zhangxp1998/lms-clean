@@ -176,8 +176,8 @@ class GraphBuilder {
     reflectEffect(s, as:_*)()()
   }
 
-  def reflectRead(s: String, as: Def*)(efKeys: Exp) = reflectEffect(s, as:_*)(efKeys)()
-  def reflectWrite(s: String, as: Def*)(efKeys: Exp) = reflectEffect(s, as:_*)()(efKeys)
+  def reflectRead(s: String, as: Def*)(efKeys: Exp*) = reflectEffect(s, as:_*)(efKeys:_*)()
+  def reflectWrite(s: String, as: Def*)(efKeys: Exp*) = reflectEffect(s, as:_*)()(efKeys:_*)
   def reflectMutable(s: String, as: Def*) = reflectEffect(s, as:_*)(STORE)()
 
   // FIXME: issues:
