@@ -584,7 +584,7 @@ abstract class DslDriverC[A: Manifest, B: Manifest] extends DslSnippet[A, B] wit
     val statics = codegen.emitSource[A,B](wrapper, "Snippet", new java.io.PrintStream(source))
     (source.toString, statics)
   }
-  var compilerCommand = "cc -std=c++14 -O2"
+  var compilerCommand = "c++ -std=c++14 -O2"
   def libraries = codegen.libraryFlags mkString(" ")
   lazy val f: A => Stream[String] = {
     // TBD: should read result of type B?
