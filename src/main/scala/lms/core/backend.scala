@@ -12,8 +12,10 @@ object Backend {
   // either a constant or a symbolic reference.
   abstract class Exp extends Def
 
-  case class Sym(n: Int) extends Exp {
+  case class Sym(n: Int) extends Exp with Ordering[Sym] {
     override def toString = s"x$n"
+
+    override def compare(x: Sym, y: Sym): Int = x.n.compare(y.n)
   }
   case class Const(x: Any) extends Exp {
     override def toString = if (x != null) x.toString else "null"
