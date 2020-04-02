@@ -593,11 +593,11 @@ abstract class DslDriverC[A: Manifest, B: Manifest] extends DslSnippet[A, B] wit
     out.close
     (new java.io.File("gen/build/snippet")).delete
     import scala.sys.process._
-    time("cmake") { (s"cmake -Bgen/build -Sgen": ProcessBuilder).lineStream.foreach(Console.println) }
+    time("cmake") { (s"cmake -Bgen/build -Sgen -DCMAKE_BUILD_TYPE=Debug": ProcessBuilder).lineStream.foreach(Console.println) }
     time("clang++") { (s"cmake --build gen/build": ProcessBuilder).lineStream.foreach(Console.println) }
     (a: A) => (s"gen/build/snippet $a": ProcessBuilder).lineStream
   }
-  def eval(a: A): Stream[String] = { val f1 = f; time("eval")(f1(a)) }
+  def eval(a: A): Stream[String] = { time("eval")(f(a)) }
 }
 
 // STUB CODE
