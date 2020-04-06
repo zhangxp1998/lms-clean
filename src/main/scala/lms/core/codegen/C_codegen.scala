@@ -578,11 +578,13 @@ class ExtendedCCodeGen extends CompactScalaCodeGen with ExtendedCodeGen {
     |End of C Generated Code
     |*******************************************/
     |int main(int argc, char *argv[]) {
-    |  if (argc != 2) {
+    |  if (argc < 2) {
     |    printf("usage: %s <arg>\n", argv[0]);
     |    return 0;
-    |  }""".stripMargin)
+    |  }
+    |  MPI_Init(&argc, &argv);
+    |  """.stripMargin)
     if (initStream.size > 0) emitln("if (init()) return 0;")
-    emitln(s"  $name(${convert("argv[1]", m1)});\n  return 0;\n}")
+    emitln(s"  $name(${convert("argv[1]", m1)});\n  MPI_Finalize();\n return 0;\n}")
   }
 }
