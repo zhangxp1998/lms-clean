@@ -585,6 +585,8 @@ class ExtendedCCodeGen extends CompactScalaCodeGen with ExtendedCodeGen {
     |  MPI_Init(&argc, &argv);
     |  """.stripMargin)
     if (initStream.size > 0) emitln("if (init()) return 0;")
-    emitln(s"  $name(${convert("argv[1]", m1)});\n  MPI_Finalize();\n return 0;\n}")
+    emitln(s"  $name(${convert("argv[1]", m1)});")
+    emitln("cleanup();");
+    emitln("return 0;\n}")
   }
 }
