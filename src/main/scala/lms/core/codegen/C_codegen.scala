@@ -300,7 +300,7 @@ class ExtendedCCodeGen extends CompactScalaCodeGen with ExtendedCodeGen {
 
   def emitInit(out: PrintStream) = if (initStream.size > 0) {
     out.println("\n/*********** Init ***********/")
-    out.println("inline int init() {")
+    out.println("inline int init(int &pargc, char ***pargv) {")
     initStream.writeTo(out)
     out.println("  return 0;\n}")
   }
@@ -582,9 +582,8 @@ class ExtendedCCodeGen extends CompactScalaCodeGen with ExtendedCodeGen {
     |    printf("usage: %s <arg>\n", argv[0]);
     |    return 0;
     |  }
-    |  MPI_Init(&argc, &argv);
     |  """.stripMargin)
-    if (initStream.size > 0) emitln("if (init()) return 0;")
+    if (initStream.size > 0) emitln("if (init(&argc, &argv)) return 0;")
     emitln(s"  $name(${convert("argv[1]", m1)});")
     emitln("cleanup();");
     emitln("return 0;\n}")

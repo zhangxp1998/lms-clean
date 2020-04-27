@@ -586,16 +586,18 @@ abstract class DslDriverC[A: Manifest, B: Manifest] extends DslSnippet[A, B] wit
   }
   var compilerCommand = "c++ -std=c++14 -O2"
   def libraries = codegen.libraryFlags mkString(" ")
+  var outputSrcPath = "gen/snippet.cpp"
+  var outputBinPath = "gen/build/snippet"
   lazy val f: A => Stream[String] = {
     // TBD: should read result of type B?
-    val out = new java.io.PrintStream("gen/snippet.cpp")
+    val out = new java.io.PrintStream(outputSrcPath)
     out.println(code)
     out.close
-    (new java.io.File("gen/build/snippet")).delete
+    (new java.io.File(outputBinPath)).delete
     import scala.sys.process._
     time("cmake") { (s"cmake -Bgen/build -Sgen -DCMAKE_BUILD_TYPE=Debug": ProcessBuilder).lineStream.foreach(Console.println) }
     time("clang++") { (s"cmake --build gen/build": ProcessBuilder).lineStream.foreach(Console.println) }
-    (a: A) => (s"gen/build/snippet $a": ProcessBuilder).lineStream
+    (a: A) => (s"$outputBinPath $a": ProcessBuilder).lineStream
   }
   def eval(a: A): Stream[String] = { time("eval")(f(a)) }
 }
