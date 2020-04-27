@@ -22,6 +22,7 @@ class ExtendedCCodeGen extends CompactScalaCodeGen with ExtendedCodeGen {
       val res = super.quote(x) // if escaped
       if (res.charAt(1) == '\\') res else "0x" + c.toHexString
     case Const(x: List[_]) => "{" + x.mkString(", ") + "}" // translate a Scala List literal to C List literal
+    case Const(x: Float) => x.toString + "f"
     case _ =>
       super.quote(x)
   }
