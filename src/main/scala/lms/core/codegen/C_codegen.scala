@@ -301,7 +301,7 @@ class ExtendedCCodeGen extends CompactScalaCodeGen with ExtendedCodeGen {
 
   def emitInit(out: PrintStream) = if (initStream.size > 0) {
     out.println("\n/*********** Init ***********/")
-    out.println("inline int init(int &pargc, char ***pargv) {")
+    out.println("inline int init(int *pargc, char ***pargv) {")
     initStream.writeTo(out)
     out.println("  return 0;\n}")
   }
