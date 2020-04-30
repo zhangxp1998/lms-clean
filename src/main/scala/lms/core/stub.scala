@@ -586,8 +586,8 @@ abstract class DslDriverC[A: Manifest, B: Manifest] extends DslSnippet[A, B] wit
   }
   var compilerCommand = "c++ -std=c++14 -O2"
   def libraries = codegen.libraryFlags mkString(" ")
-  var outputSrcPath = "gen/snippet.cpp"
-  var outputBinPath = "gen/build/snippet"
+  val outputSrcPath = "gen/snippet.cpp"
+  val outputBinPath = "gen/build/snippet"
   lazy val f: A => Stream[String] = {
     // TBD: should read result of type B?
     val out = new java.io.PrintStream(outputSrcPath)
