@@ -586,7 +586,6 @@ class ExtendedCCodeGen extends CompactScalaCodeGen with ExtendedCodeGen {
     |  """.stripMargin)
     if (initStream.size > 0) emitln("if (init(&argc, &argv)) return 0;")
     emitln(s"  $name(${convert("argv[1]", m1)});")
-    emitln("cleanup();");
     emitln("return 0;\n}")
   }
 }
